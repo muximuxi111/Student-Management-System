@@ -1,0 +1,17 @@
+# 编译文件
+*.exe
+*.out
+
+# 数据文件
+*.dat
+
+# vscode配置
+.vscode/
+*.code-workspace
+
+# 临时文件
+*.o
+
+# Windows
+Thumbs.db
+Desktop.ini
