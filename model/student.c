@@ -1,56 +1,62 @@
-#include"student.h"
+#include "student.h"
 
-//修改密码
-int modify_password_student(Stulistptr list,int id){
-    if(list==NULL){
+// 修改密码
+int modify_password_student(Stulistptr list, int id)
+{
+    if (list == NULL)
+    {
         printf("studentnode error\n");
         return -1;
     }
-    Studentptr p=list->head;
-    while (p!=NULL)
+    Studentptr p = list->head;
+    while (p != NULL)
     {
-        if(p->ID==id){
+        if (p->ID == id)
+        {
             break;
         }
-        p=p->next;
+        p = p->next;
     }
 
-    if(p==NULL)
+    if (p == NULL)
     {
-        printf("student not found\n");  //边界查询
+        printf("student not found\n"); // 边界查询
         return -3;
     }
 
     printf("please input you old_password:");
-    char s[20]="";
-    char new1[20]="";
-    char new2[20]="";
-    
-    fgets(s,sizeof(s),stdin);       //输入旧密码     
-    s[strcspn(s,"\n")]='\0';
+    char s[20] = "";
+    char new1[20] = "";
+    char new2[20] = "";
 
-    if(strcmp(s,p->password)!=0){    //确认密码是否输入正确
+    input_password(s);       // 输入旧密码
+    printf("\n");
+
+    if (strcmp(s, p->password) != 0)
+    { // 确认密码是否输入正确
         printf("password input errot\n");
         return -2;
     }
     printf("input password correctly\n");
 
-    while(1)                    
+    while (1)
     {
         printf("please input you new password:");
-        fgets(new1,sizeof(new1),stdin);       //输入新密码
-        new1[strcspn(new1,"\n")]='\0';
+        input_password(new1);          // 输入新密码
+        printf("\n");
 
-        printf("please confirm you new password:");         
-        fgets(new2,sizeof(new2),stdin);       //确认新密码
-        new2[strcspn(new2,"\n")]='\0';
+        printf("please confirm you new password:");
+        input_password(new2);    // 确认新密码
+        printf("\n");
 
-        if(strcmp(new1,new2)==0){             //更换新密码
-            strcpy(p->password,new2);
+        if (strcmp(new1, new2) == 0)
+        { // 更换新密码
+            strcpy(p->password, new2);
             printf("update password successful\n");
             break;
         }
-        else{
+        else
+        {
             printf("The enter password is not same,please input again\n");
         }
     }
@@ -60,7 +66,7 @@ int modify_password_student(Stulistptr list,int id){
 // 查阅自身信息
 Studentptr search_information_student(Stulistptr list, int id)
 {
-    if(list == NULL)
+    if (list == NULL)
     {
         printf("student list error\n");
         return NULL;
@@ -68,9 +74,9 @@ Studentptr search_information_student(Stulistptr list, int id)
 
     Studentptr p = list->head;
 
-    while(p != NULL)
+    while (p != NULL)
     {
-        if(p->ID == id)
+        if (p->ID == id)
         {
             break;
         }
@@ -78,12 +84,11 @@ Studentptr search_information_student(Stulistptr list, int id)
         p = p->next;
     }
 
-    if(p == NULL)
+    if (p == NULL)
     {
         printf("student not found\n");
         return NULL;
     }
-
 
     printf("\n");
     printf("================ Student Information ================\n");
@@ -100,14 +105,13 @@ Studentptr search_information_student(Stulistptr list, int id)
 
     printf("%-12d", p->ID);
 
-
     printf("%-18s", p->name);
 
-    if(p->sex == MALE)
+    if (p->sex == MALE)
     {
         printf("%-12s", "Male");
     }
-    else if(p->sex == FEMALE)
+    else if (p->sex == FEMALE)
     {
         printf("%-12s", "Female");
     }
@@ -163,7 +167,7 @@ int save_student(Stulistptr list)
             fwrite(s2, sizeof(s2), 1, fp);
         }
 
-        fwrite(p->password,sizeof(p->password),1,fp);
+        fwrite(p->password, sizeof(p->password), 1, fp);
 
         fwrite(p->birthday, sizeof(p->birthday), 1, fp);
 
@@ -207,11 +211,11 @@ int load_student(Stulistptr list)
             return -3;
         }
 
-        p->next=NULL;   //避免next指针是随机分配的垃圾值
+        p->next = NULL; // 避免next指针是随机分配的垃圾值
 
         char sex[20];
 
-        if (fread(p->name, sizeof(p->name), 1, fp) != 1)    //文件读取内容为空就停止读取
+        if (fread(p->name, sizeof(p->name), 1, fp) != 1) // 文件读取内容为空就停止读取
         {
             free(p);
             break;
@@ -254,7 +258,7 @@ int load_student(Stulistptr list)
                 tail = tail->next;
             }
 
-            tail->next=p;
+            tail->next = p;
         }
     }
 
@@ -287,7 +291,7 @@ Studentptr create_student()
         return NULL;
     }
     memset(s, 0, sizeof(Student));
-    strcpy(s->password,"123456");   //初始化密码
+    strcpy(s->password, "123456"); // 初始化密码
 
     printf("please input name:\n");
     scanf("%19s", s->name);
@@ -340,6 +344,13 @@ int add_student(Stulistptr list)
         printf(" new student node error\n");
         return -2;
     }
+    //判断id唯一性
+    if(search_student(list,p->ID)!=NULL)
+    {
+        printf("this id is exist,please input student information again\n");
+        free(p);
+        return -3;
+    }
     p->next = list->head;
     list->head = p;
     list->count++;
@@ -386,6 +397,7 @@ int delete_student(Stulistptr list, int id)
     printf("delete student successful\n");
     return 0;
 }
+
 // 修改学生
 int modify_student(Stulistptr list, int id)
 {
@@ -476,23 +488,19 @@ Studentptr search_student(Stulistptr list, int id)
         p = p->next;
     }
 
-    printf("not find this student\n");
     return NULL;
 }
 
-
-//展示所有学生
+// 展示所有学生
 int show_student(Stulistptr list)
 {
-    if(list==NULL)
+    if (list == NULL)
     {
         printf("list error\n");
         return -1;
     }
 
-
-    Studentptr p=list->head;
-
+    Studentptr p = list->head;
 
     printf("%-12s%-18s%-12s%-15s%-12s%-12s%-12s%-12s\n",
            "ID",
@@ -504,39 +512,33 @@ int show_student(Stulistptr list)
            "English",
            "Total");
 
-
-    while(p!=NULL)
-{
-    printf("%-12d",p->ID);
-
-    printf("%-18s",p->name);
-
-
-    if(p->sex==MALE)
+    while (p != NULL)
     {
-        printf("%-12s","Male");
+        printf("%-12d", p->ID);
+
+        printf("%-18s", p->name);
+
+        if (p->sex == MALE)
+        {
+            printf("%-12s", "Male");
+        }
+        else if (p->sex == FEMALE)
+        {
+            printf("%-12s", "Female");
+        }
+
+        printf("%-15s", p->birthday);
+
+        printf("%-12.2lf", p->math_score);
+
+        printf("%-12.2lf", p->chinese_score);
+
+        printf("%-12.2lf", p->english_score);
+
+        printf("%-12.2lf\n", p->overall_score);
+
+        p = p->next;
     }
-    else if(p->sex==FEMALE)
-    {
-        printf("%-12s","Female");
-    }
-
-
-    printf("%-15s",p->birthday);
-
-
-    printf("%-12.2lf",p->math_score);
-
-    printf("%-12.2lf",p->chinese_score);
-
-    printf("%-12.2lf",p->english_score);
-
-    printf("%-12.2lf\n",p->overall_score);
-
-
-    p=p->next;
-}
-
 
     return 0;
 }
@@ -553,10 +555,10 @@ int sort_student_id(Stulistptr list)
     Studentptr i = list->head;
     Studentptr j = list->head;
     Student temp;
-    for (i = list->head; i != NULL; i=i->next)
+    for (i = list->head; i != NULL; i = i->next)
     {
         Studentptr max = i;
-        for (j = i->next; j != NULL; j=j->next)
+        for (j = i->next; j != NULL; j = j->next)
         {
             if (max->ID > j->ID)
             {
@@ -589,10 +591,10 @@ int sort_student_mathscore(Stulistptr list)
     Studentptr i = list->head;
     Studentptr j = list->head;
     Student temp;
-    for (i = list->head; i != NULL; i=i->next)
+    for (i = list->head; i != NULL; i = i->next)
     {
         Studentptr max = i;
-        for (j = i->next; j != NULL; j=j->next)
+        for (j = i->next; j != NULL; j = j->next)
         {
             if (max->math_score < j->math_score)
             {
@@ -611,7 +613,6 @@ int sort_student_mathscore(Stulistptr list)
         max->next = next;
     }
     show_student(list);
-    printf("show successful\n");
     return 0;
 }
 
@@ -626,10 +627,10 @@ int sort_student_chinesescore(Stulistptr list)
     Studentptr i = list->head;
     Studentptr j = list->head;
     Student temp;
-    for (i = list->head; i != NULL; i=i->next)
+    for (i = list->head; i != NULL; i = i->next)
     {
         Studentptr max = i;
-        for (j = i->next; j != NULL; j=j->next)
+        for (j = i->next; j != NULL; j = j->next)
         {
             if (max->chinese_score < j->chinese_score)
             {
@@ -648,7 +649,6 @@ int sort_student_chinesescore(Stulistptr list)
         max->next = next;
     }
     show_student(list);
-    printf("show successful\n");
     return 0;
 }
 
@@ -663,10 +663,10 @@ int sort_student_englishscore(Stulistptr list)
     Studentptr i = list->head;
     Studentptr j = list->head;
     Student temp;
-    for (i = list->head; i != NULL; i=i->next)
+    for (i = list->head; i != NULL; i = i->next)
     {
         Studentptr max = i;
-        for (j = i->next; j != NULL; j=j->next)
+        for (j = i->next; j != NULL; j = j->next)
         {
             if (max->english_score < j->english_score)
             {
@@ -685,7 +685,6 @@ int sort_student_englishscore(Stulistptr list)
         max->next = next;
     }
     show_student(list);
-    printf("show successful\n");
     return 0;
 }
 
@@ -700,10 +699,10 @@ int sort_student_overallscore(Stulistptr list)
     Studentptr i = list->head;
     Studentptr j = list->head;
     Student temp;
-    for (i = list->head; i != NULL; i=i->next)
+    for (i = list->head; i != NULL; i = i->next)
     {
         Studentptr max = i;
-        for (j = i->next; j != NULL; j=j->next)
+        for (j = i->next; j != NULL; j = j->next)
         {
             if (max->overall_score < j->overall_score)
             {
@@ -722,22 +721,22 @@ int sort_student_overallscore(Stulistptr list)
         max->next = next;
     }
     show_student(list);
-    printf("show successful\n");
     return 0;
 }
 
-//销毁学生链表
-int destroy_studentlist(Stulistptr list){
-    if(list==NULL)
+// 销毁学生链表
+int destroy_studentlist(Stulistptr list)
+{
+    if (list == NULL)
     {
         printf("list error\n");
         return -1;
     }
-    Studentptr p=list->head;
-    while (p!=NULL)
+    Studentptr p = list->head;
+    while (p != NULL)
     {
-        Studentptr del=p;
-        p=p->next;
+        Studentptr del = p;
+        p = p->next;
         free(del);
     }
     free(list);

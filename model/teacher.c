@@ -29,8 +29,8 @@ int modify_password_teacher(Tealistptr list, int work_id)
     char new1[20] = "";
     char new2[20] = "";
 
-    fgets(t, sizeof(t), stdin); // 输入旧密码
-    t[strcspn(t, "\n")] = '\0';
+    input_password(t); // 输入旧密码
+    printf("\n");
 
     if (strcmp(t, p->password) != 0)
     { // 确认密码是否输入正确
@@ -42,12 +42,12 @@ int modify_password_teacher(Tealistptr list, int work_id)
     while (1)
     {
         printf("please input you new password:");
-        fgets(new1, sizeof(new1), stdin); // 输入新密码
-        new1[strcspn(new1, "\n")] = '\0';
+        input_password(new1); // 输入新密码
+        printf("\n");
 
         printf("please confirm you new password:");
-        fgets(new2, sizeof(new2), stdin); // 确认新密码
-        new2[strcspn(new2, "\n")] = '\0';
+        input_password(new2); // 确认新密码
+        printf("\n");
 
         if (strcmp(new1, new2) == 0)
         { // 更换新密码
@@ -309,6 +309,13 @@ int add_teacher(Tealistptr list)
         printf(" new teacher p error\n");
         return -2;
     }
+    //判断id唯一性
+    if(search_teacher(list,p->work_id)!=NULL)
+    {
+        printf("this work_id is exist,please input teacher information again\n");
+        free(p);
+        return -3;
+    }
     p->next = list->head;
     list->head = p;
     list->count++;
@@ -396,9 +403,10 @@ int delete_teacher(Tealistptr list, int work_id)
     // 删除链表节点后同步文件
     save_teacher(list);
 
-    printf("delete teacher p successful\n");
+    printf("delete teacher information successful\n");
     return 0;
 }
+
 // 修改教师信息
 int modify_teacher(Tealistptr list, int work_id)
 {
@@ -453,6 +461,7 @@ int modify_teacher(Tealistptr list, int work_id)
     printf("update teacher informathion succssful\n");
     return 0;
 }
+
 // 查找老师
 Teacherptr search_teacher(Tealistptr list, int work_id)
 {

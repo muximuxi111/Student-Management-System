@@ -30,8 +30,8 @@ int  modify_password_admin(Adminptr t)
     char new1[20]="";
     char new2[20]="";
     printf("please input old passworld:");
-    fgets(old,sizeof(old),stdin);
-    old[strcspn(old,"\n")]='\0';
+    input_password(old);
+    printf("\n");
     if(strcmp(old,t->password)!=0)
     {
         printf("password input error,please input again\n");
@@ -42,11 +42,11 @@ int  modify_password_admin(Adminptr t)
     while (1)
     {
         printf("please input you new password:");
-        fgets(new1, sizeof(new1), stdin); // 输入新密码
-        new1[strcspn(new1, "\n")] = '\0';
+        input_password(new1);            // 输入新密码
+        printf("\n");
         printf("please confirm you new password:");
-        fgets(new2, sizeof(new2), stdin); // 确认新密码
-        new2[strcspn(new2, "\n")] = '\0';
+        input_password(new2);              // 确认新密码
+        printf("\n");
         if (strcmp(new1, new2) == 0)
         { // 更换新密码
             strcpy(t->password, new2);

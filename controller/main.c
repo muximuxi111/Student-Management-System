@@ -10,11 +10,12 @@ int main()
 
     load_teacher(T_list);
 
-    Adminptr admin =create_admin();
+    Adminptr admin = create_admin();
 
     int flag = 1;
     while (flag)
     {
+        system("cls");
         int choice;
         printf("==========Student_Management_System==========\n");
         printf("1.admin\n");
@@ -31,14 +32,17 @@ int main()
         {
         case 1:
             admin_controller(T_list, admin);
+            system("pause");
             break;
 
         case 2:
             teacher_controller(T_list, S_list);
+            system("pause");
             break;
 
         case 3:
             student_controller(S_list);
+            system("pause");
             break;
 
         case 0:
@@ -52,7 +56,8 @@ int main()
             break;
         }
 
-        if(flag==0){
+        if (flag == 0)
+        {
             break;
         }
     }
